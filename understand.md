@@ -1,11 +1,15 @@
 # What I Did
 
-I worked on a simple person detection pipeline using two Jupyter notebooks inside the `person_reidentification` folder.
+I created a person re-identification preprocessing pipeline using three Jupyter notebooks.
 
-First, in `video_to_frames.ipynb`, I loaded a WhatsApp video using OpenCV. I checked whether the video file exists, created a `saved_frames` folder, opened the video, read its FPS, and saved one frame every 0.5 seconds. Each saved frame was named with a frame number and timestamp, then I listed all extracted frames at the end.
+In `video_to_frames.ipynb`, I loaded the source WhatsApp video with OpenCV, checked that the file exists, created a `saved_frames` folder, and extracted one frame every 0.5 seconds. I saved the frames with frame numbers and timestamps, then listed the extracted frames.
 
-Next, in `person_detection.ipynb`, I used the saved frames as input for person detection. I installed and imported OpenCV, NumPy, pathlib, and Ultralytics YOLO. I loaded the `yolo11n.pt` model and processed every image from the `saved_frames` folder.
+In `person_detection.ipynb`, I loaded the YOLO11n model and processed all images from `saved_frames`. I detected only the `person` class, drew green bounding boxes with confidence scores, and saved the annotated output frames into `detected_frames` for checking the detection results.
 
-For each frame, I ran YOLO with a confidence threshold of `0.2` so that partial people could also be detected. I filtered detections to only the `person` class, drew green bounding boxes around detected people, added confidence labels, and saved the processed images into a `detected_frames` folder.
+In `person_cropping.ipynb`, I created the final cropping step for the pipeline. I installed/imported the required libraries such as OpenCV, PIL, NumPy, tqdm, pathlib, and Ultralytics YOLO. I set the input folder as `saved_frames`, the output folder as `cropped_persons`, and loaded the local `yolo11n.pt` model.
 
-Overall, I converted a video into image frames and then applied YOLO-based person detection on those frames to produce output images with detected persons marked.
+Then I processed every extracted frame one by one. For each frame, I ran YOLO detection with a confidence threshold of `0.2`, selected only the `person` class, checked the bounding box coordinates, clipped them inside the image size, skipped invalid or very small boxes, and cropped the detected person area from the original frame.
+
+Finally, I saved each cropped person image into the `cropped_persons` folder using names like `frame_<frame_number>_person_<person_number>.jpg`. This notebook also counted how many cropped person images were saved, so I could confirm the final output.
+
+Overall, I converted a video into frames, detected people in those frames, and generated cropped person images that can be used for person re-identification or dataset preparation.
