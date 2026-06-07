@@ -1,3 +1,12 @@
-cropped_persons/
-saved_frames/
-detected_frames/
+# Videos
+*.mp4
+*.avi
+*.mov
+
+# Generated frame folders
+person_reidentification/saved_frames/
+person_reidentification/detected_frames/
+person_reidentification/cropped_persons/
+
+# YOLO model weights
+*.pt
