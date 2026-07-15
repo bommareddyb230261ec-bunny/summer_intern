@@ -1,250 +1,418 @@
 # AI-Based Face Re-Identification from Video Sequences
 
-## Project Overview
+An end-to-end AI-powered surveillance system that identifies a person from one or more surveillance videos using a single query face image.
 
-This project is an end-to-end AI surveillance dashboard for face re-identification from video sequences. It combines computer vision, deep learning, and web application development to detect people in video frames, extract faces, generate embeddings, match identities, and display results through an interactive dashboard.
-
-The system is designed to help a user upload a query face image and one or more video files, process them through an AI pipeline, and retrieve the most similar faces from the indexed video data.
+The system combines **Computer Vision**, **Deep Learning**, **Vector Similarity Search**, and **Full Stack Web Development** to provide an interactive dashboard capable of processing surveillance videos and locating the queried individual automatically.
 
 ---
 
-## What This Project Does
+# Problem Statement
 
-The pipeline performs the following steps:
+Modern surveillance systems generate massive amounts of video footage from CCTV cameras, drones, and body-worn cameras. Manually searching these videos for a particular individual is time-consuming, error-prone, and impractical.
 
-1. Extracts frames from uploaded video files.
-2. Detects persons in the video frames using YOLO.
-3. Detects and crops faces from the detected person regions.
-4. Aligns faces and generates ArcFace embeddings.
-5. Stores and searches embeddings using FAISS for fast similarity matching.
-6. Displays results through a React + FastAPI dashboard with authentication.
-
-This makes the project a strong example of real-world AI application development, covering:
-
-- computer vision
-- deep learning inference
-- vector similarity search
-- backend APIs
-- frontend dashboard UI
-- authentication and job-based processing
+This project addresses that challenge by enabling an operator to upload a **query face image** along with multiple surveillance videos. The system automatically processes the videos, detects faces, generates feature embeddings, performs similarity search, and identifies whether the queried person appears in any uploaded video.
 
 ---
 
-## Key Features
+# Key Features
 
-- Face detection and person detection from video sequences
-- ArcFace-based embedding generation
-- FAISS-powered face similarity search
-- Adaptive similarity thresholding for unknown-person rejection
-- Job-based video processing pipeline
-- Google OAuth authentication
-- Interactive dashboard for uploading queries and videos
-- Result visualization and output storage
+- Google OAuth Login with JWT Authentication
+- Upload a query face image
+- Upload multiple surveillance videos
+- Automatic frame extraction
+- Person detection using YOLO
+- Face detection and cropping
+- ArcFace embedding generation
+- FAISS-based similarity search
+- Interactive React dashboard
+- FastAPI backend with REST APIs
+- Processing status tracking
+- Match visualization with timestamps
+- Result management through dashboard
 
 ---
 
-## Technologies Used
+# System Architecture
 
-### AI and Computer Vision
+```
+                    React Dashboard
+                           │
+                           ▼
+                    FastAPI Backend
+                           │
+                           ▼
+                 AI Processing Pipeline
+                           │
+        ┌─────────────────────────────────┐
+        │ Video Frame Extraction          │
+        │ Person Detection (YOLO)         │
+        │ Face Detection                  │
+        │ Face Alignment                  │
+        │ ArcFace Embedding Generation    │
+        │ FAISS Similarity Search         │
+        └─────────────────────────────────┘
+                           │
+                           ▼
+                     Matching Results
+                           │
+                           ▼
+                  Dashboard Visualization
+```
+
+---
+
+# AI Pipeline
+
+The complete processing pipeline consists of the following stages.
+
+## 1. Video Upload
+
+The user uploads
+
+- One query face image
+- One or more surveillance videos
+
+---
+
+## 2. Frame Extraction
+
+Each uploaded video is converted into image frames.
+
+Purpose:
+
+- Reduce video into processable images
+- Preserve timestamps for later visualization
+
+---
+
+## 3. Person Detection
+
+YOLO detects every person present in each frame.
+
+Output:
+
+- Cropped person images
+- Bounding box coordinates
+
+---
+
+## 4. Face Detection
+
+Faces are extracted only from detected person regions.
+
+Benefits:
+
+- Faster processing
+- Reduced false positives
+
+---
+
+## 5. Face Embedding Generation
+
+ArcFace converts every detected face into a fixed-length feature embedding.
+
+Each embedding represents the unique facial characteristics of an individual.
+
+---
+
+## 6. Similarity Search
+
+The query face embedding is compared against all extracted embeddings using FAISS.
+
+FAISS enables extremely fast nearest-neighbor search even for large embedding databases.
+
+---
+
+## 7. Result Generation
+
+For every detected match, the system returns
+
+- Video Name
+- Timestamp
+- Similarity Score
+- Preview Image
+
+These results are displayed on the dashboard.
+
+---
+
+# Dashboard Workflow
+
+```
+User Login
+        │
+        ▼
+Dashboard
+        │
+        ▼
+Upload Query Face
+        │
+        ▼
+Upload Videos
+        │
+        ▼
+Start Processing
+        │
+        ▼
+FastAPI
+        │
+        ▼
+ArcFace Pipeline
+        │
+        ▼
+Results
+        │
+        ▼
+Dashboard
+```
+
+---
+
+# Technology Stack
+
+## Artificial Intelligence
 
 - Python
-- OpenCV
 - PyTorch
-- Ultralytics YOLO
+- ArcFace
 - InsightFace
-- ArcFace embeddings
-- FAISS for similarity search
-- scikit-learn for evaluation metrics
-- matplotlib and seaborn for visualization
+- OpenCV
+- YOLO
+- FAISS
 
-### Backend
+---
+
+## Backend
 
 - FastAPI
 - SQLAlchemy
+- JWT Authentication
+- Google OAuth
+- PostgreSQL
 - Pydantic
-- JWT authentication
-- Authlib for Google OAuth
 
-### Frontend
+---
+
+## Frontend
 
 - React
 - Vite
-- React Router
 - Axios
-- Framer Motion
-- Lucide icons
-
-### Database and Storage
-
-- SQLite for local development
-- JSON-based result and metadata storage
-- File-based caching for processed video artifacts
 
 ---
 
-## Project Structure
+# Checking Output Results
 
-- arcface/: AI pipeline for frame extraction, detection, embedding generation, and matching
-- web/app/: FastAPI backend, authentication, routes, database, and job processing
-- web/frontend/: React dashboard UI
-- web/requirements.txt: Python dependencies
-- web/frontend/package.json: frontend dependencies
+Processed output files are saved in the `results/` folder in the project root.
+
+To inspect the results:
+
+- Open the `results/` directory.
+- Each file is a JSON result file containing match details from the processing pipeline.
+- Look for file names such as `results_<uuid>.json`.
+- Use a JSON viewer or editor to open the file and see the complete output data.
+
+If the dashboard is running, the same result files are generated by the backend and can be viewed in the web interface as well.
+
+- React Router
+- HTML
+- CSS
+- JavaScript
 
 ---
 
-## How to Clone the Project
+## Development Tools
 
-Run the following commands:
+- Git
+- GitHub
+- VS Code
+
+---
+
+# Project Structure
+
+```
+NSG AI Surveillance Dashboard/
+
+├── arcface/
+│
+│   AI Pipeline
+│
+│   • Video Frame Extraction
+│   • Person Detection
+│   • Face Detection
+│   • Embedding Generation
+│   • Query Matching
+│
+├── web/
+│
+│   app/
+│       FastAPI Backend
+│
+│   frontend/
+│       React Dashboard
+│
+│   requirements.txt
+│
+└── README.md
+```
+
+---
+
+# Authentication Flow
+
+```
+Google Login
+
+↓
+
+Google OAuth
+
+↓
+
+FastAPI
+
+↓
+
+JWT Generation
+
+↓
+
+Dashboard Access
+```
+
+Only authenticated users can access the dashboard.
+
+---
+
+# Backend Workflow
+
+```
+Upload Query
+
+↓
+
+Upload Videos
+
+↓
+
+Save Files
+
+↓
+
+Run Pipeline
+
+↓
+
+Generate Results
+
+↓
+
+Return JSON
+
+↓
+
+Dashboard
+```
+
+---
+
+# Output
+
+For every successful match the system returns
+
+- Query Face
+- Video Name
+- Timestamp
+- Similarity Score
+- Preview Image
+
+---
+
+# Installation
+
+## Clone Repository
 
 ```bash
-git clone <your-repository-url>
+git clone <repository-url>
+
 cd "NSG AI Surveillance Dashboard"
 ```
 
-If you already have the repository locally, make sure you are in the project root before running the setup steps below.
-
 ---
 
-## Setup Instructions
-
-### 1. Prerequisites
-
-Make sure you have installed:
-
-- Python 3.10 or newer
-- Node.js 18 or newer
-- Git
-
-### 2. Create a Python Environment
-
-```bash
-python -m venv venv
-venv\Scripts\activate
-```
-
-On Linux or macOS:
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install Python Dependencies
-
-```bash
-pip install -r web/requirements.txt
-```
-
-### 4. Install Frontend Dependencies
-
-```bash
-cd web/frontend
-npm install
-```
-
-### 5. Configure Environment Variables
-
-Create a file named `.env` inside the web folder and fill in the required values.
-
-Example:
-
-```env
-DATABASE_URL=sqlite+aiosqlite:///./app/data/jobs.sqlite3
-GOOGLE_CLIENT_ID=your_google_client_id
-GOOGLE_CLIENT_SECRET=your_google_client_secret
-SECRET_KEY=your_secret_key
-REDIRECT_URI=http://localhost:8000/auth/callback
-FRONTEND_URL=http://localhost:5173
-```
-
-> If you are using a different database, replace the `DATABASE_URL` value accordingly.
-
-### 6. Run the Backend
-
-From the project root:
+## Backend
 
 ```bash
 cd web
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+
+python -m venv .venv
+
+.venv\Scripts\activate
+
+pip install -r requirements.txt
 ```
 
-### 7. Run the Frontend
+---
 
-In a second terminal:
+## Frontend
 
 ```bash
-cd web/frontend
+cd frontend
+
+npm install
+```
+
+---
+
+## Start Backend
+
+```bash
+uvicorn app.main:app --reload
+```
+
+---
+
+## Start Frontend
+
+```bash
 npm run dev
 ```
 
-Then open:
+---
 
-- Frontend: http://localhost:5173
-- Backend API: http://localhost:8000
+# Future Improvements
+
+- Real-time CCTV support
+- Multi-camera tracking
+- Distributed processing
+- Cloud deployment
+- GPU optimization
+- Person re-identification
+- Automatic report generation
 
 ---
 
-## How the System Works
+# Skills Demonstrated
 
-### Workflow
+This project demonstrates practical experience in
 
-1. Upload a query face image.
-2. Upload one or more video files.
-3. Start processing.
-4. The backend runs the ArcFace pipeline.
-5. The system generates matches and stores the results.
-6. The React dashboard displays the processed outputs and match results.
-
-### Output
-
-The project stores:
-
-- extracted frames
-- detected persons
-- cropped faces
-- embeddings and metadata
-- FAISS index files
-- evaluation metrics and visualization outputs
+- Computer Vision
+- Deep Learning
+- Face Recognition
+- REST API Development
+- Full Stack Web Development
+- Authentication
+- Database Design
+- Software Architecture
+- Modular AI Pipeline Design
+- Vector Similarity Search
+- End-to-End AI System Integration
 
 ---
 
-## Why This Project Is Impressive for Interviews
+# About
 
-This project shows that you can build more than a simple demo. It demonstrates:
+This project was developed as part of an AI surveillance research initiative focused on automating face re-identification from surveillance video sequences.
 
-- end-to-end AI pipeline development
-- real computer vision implementation
-- practical use of deep learning models in production-like workflows
-- integration of AI with a full-stack web application
-- strong understanding of software engineering concepts like modular design, caching, job processing, and authentication
-
-If an interviewer asks, you can confidently say:
-
-> This project is an AI-based surveillance system that performs video-to-face re-identification using deep learning, similarity search, and a web-based interface.
-
----
-
-## Future Improvements
-
-Possible improvements for the project include:
-
-- deployment to cloud platforms
-- support for real-time video streams
-- better UI/UX for monitoring and analytics
-- database migration from SQLite to PostgreSQL
-- model optimization for lower latency
-- multi-camera tracking and identity continuity
-
----
-
-## Summary
-
-This repository is a strong portfolio project because it combines:
-
-- artificial intelligence
-- computer vision
-- backend engineering
-- frontend design
-- modern software architecture
-
-It is a great example of how AI can be transformed into a usable application that looks professional and interview-ready.
+It demonstrates how modern AI models can be integrated with scalable backend services and interactive web applications to solve real-world surveillance and security problems.
