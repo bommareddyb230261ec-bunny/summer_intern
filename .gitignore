@@ -1,0 +1,58 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Node
+node_modules/
+.npm/
+
+# Build
+/dist/
+/build/
+/.next/
+
+# VS Code
+.vscode/
+.idea/
+
+# Logs and caches
+*.log
+*.out
+*.tmp
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# OS files
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+
+# Project-specific generated artifacts
+arcface/cropped_faces/
+arcface/cropped_persons/
+arcface/saved_frames/
+arcface/video_cache/
+arcface/*.pt
+arcface/*.onnx
+arcface/*.pkl
+arcface/*.faiss
+arcface/*.json
+
+web/app/data/*.json
+web/app/data/*.sqlite3*
+web/app/data/*.db*

@@ -1,0 +1,233 @@
+:root {
+  color-scheme: dark;
+  font-family:
+    "Poppins",
+    Inter,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  margin: 0;
+  background: #020617;
+  color: #ffffff;
+}
+
+button {
+  font: inherit;
+}
+
+.login-shell {
+  min-height: 100vh;
+  width: 100%;
+  display: grid;
+  place-items: center;
+  position: relative;
+  overflow: hidden;
+  padding: 24px;
+  background-image: url("/login.png");
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  image-rendering: auto;
+  transform: translate3d(0, 0, 0);
+}
+
+.login-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.login-card {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 450px);
+  padding: 50px;
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  box-shadow: 0 40px 120px rgba(0, 0, 0, 0.35);
+  color: #ffffff;
+  text-align: center;
+  animation:
+    fadeInUp 0.9s ease both,
+    floatCard 8s ease-in-out infinite;
+}
+
+.login-card--loading {
+  min-height: 240px;
+  display: grid;
+  place-items: center;
+}
+
+.login-card__eyebrow {
+  margin: 0 0 20px;
+  font-size: 0.75rem;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  font-weight: 700;
+  color: #5bd2ff;
+}
+
+.login-card__title {
+  margin: 0;
+  font-size: clamp(2.5rem, 4vw, 3.5rem);
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: #ffffff;
+}
+
+.login-card__subtitle {
+  margin: 20px auto 36px;
+  max-width: 90%;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.78);
+  line-height: 1.8;
+}
+
+.google-button,
+.google-button--logout {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding: 16px 22px;
+  border: none;
+  border-radius: 16px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #ffffff;
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease,
+    background 0.25s ease;
+  box-shadow: 0 16px 40px rgba(0, 75, 255, 0.25);
+}
+
+.google-button {
+  background: linear-gradient(135deg, #2f8cff, #1b6af5, #1074ff);
+}
+
+.google-button:hover {
+  transform: translateY(-2px) scale(1.01);
+  box-shadow: 0 24px 50px rgba(16, 116, 255, 0.32);
+}
+
+.google-button--logout {
+  margin-top: 20px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #cfe7ff;
+  box-shadow: 0 16px 30px rgba(0, 0, 0, 0.2);
+}
+
+.google-button__icon {
+  width: 24px;
+  height: 24px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-card {
+  margin-top: 24px;
+  padding: 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-align: left;
+  overflow: auto;
+}
+
+.profile-card h2 {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  color: #b3e5ff;
+}
+
+.profile-card pre {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.6;
+  color: #e8f7ff;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.login-card__error,
+.loading-label {
+  margin-top: 20px;
+  font-size: 0.95rem;
+  color: #ff8ea1;
+}
+
+@media (max-width: 768px) {
+  .login-shell {
+    padding: 20px;
+  }
+
+  .login-card {
+    width: 100%;
+    padding: 34px 28px;
+    border-radius: 22px;
+  }
+
+  .login-card__title {
+    font-size: 2.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-card {
+    padding: 30px 22px;
+    border-radius: 20px;
+  }
+
+  .login-card__eyebrow {
+    letter-spacing: 0.28em;
+  }
+
+  .login-card__subtitle {
+    margin-bottom: 30px;
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes floatCard {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
