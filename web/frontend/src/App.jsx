@@ -53,7 +53,9 @@ function LoginPage() {
       <div className="login-overlay" />
 
       <section className="login-card">
-        <div className="login-card__eyebrow">NSG AI SURVEILLANCE DASHBOARD</div>
+        <div className="login-card__eyebrow">
+          AI-BASED FACE RE-IDENTIFICATION
+        </div>
         <h1 className="login-card__title">Welcome Back</h1>
         <p className="login-card__subtitle">
           Secure AI-Powered Surveillance Platform

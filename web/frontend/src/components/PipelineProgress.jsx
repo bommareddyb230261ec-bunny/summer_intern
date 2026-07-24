@@ -4,12 +4,24 @@ import { Activity, Clock, Cpu, Gauge } from "lucide-react";
 import ProgressTimeline from "./ProgressTimeline";
 import StatusBadge from "./StatusBadge";
 
-function PipelineProgress({ status, stage, message, progress, videoCount, peopleCount }) {
+function PipelineProgress({
+  status,
+  stage,
+  message,
+  progress,
+  videoCount,
+  peopleCount,
+}) {
   const isRunning = status === "RUNNING";
-  const eta = status === "COMPLETED" ? "Complete" : isRunning ? "2-5 min" : "Pending";
+  const eta =
+    status === "COMPLETED" ? "Complete" : isRunning ? "2-5 min" : "Pending";
 
   return (
-    <motion.article className="panel pipeline-panel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+    <motion.article
+      className="panel pipeline-panel"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
       <div className="panel__header">
         <div>
           <span>Pipeline</span>
@@ -23,7 +35,11 @@ function PipelineProgress({ status, stage, message, progress, videoCount, people
           <strong>{progress}%</strong>
           <span>{message}</span>
         </div>
-        <div className="progress-ring" style={{ "--progress": `${progress * 3.6}deg` }} aria-label={`${progress}% complete`}>
+        <div
+          className="progress-ring"
+          style={{ "--progress": `${progress * 3.6}deg` }}
+          aria-label={`${progress}% complete`}
+        >
           <span>{progress}</span>
         </div>
       </div>
@@ -57,7 +73,9 @@ function PipelineProgress({ status, stage, message, progress, videoCount, people
         <div>
           <Cpu size={16} aria-hidden="true" />
           <span>Processing speed</span>
-          <strong>{isRunning ? `${Math.max(videoCount, 1)} stream/s` : "Idle"}</strong>
+          <strong>
+            {isRunning ? `${Math.max(videoCount, 1)} stream/s` : "Idle"}
+          </strong>
         </div>
       </div>
     </motion.article>

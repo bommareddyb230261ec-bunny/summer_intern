@@ -15,7 +15,14 @@
   --shadow-sm: 0 8px 20px rgba(15, 23, 42, 0.06);
   --shadow-md: 0 18px 45px rgba(15, 23, 42, 0.1);
   --radius: 18px;
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
 }
 
 * {
@@ -55,13 +62,23 @@ select:focus-visible {
   display: grid;
   grid-template-columns: 280px minmax(0, 1fr);
   background:
-    radial-gradient(circle at top right, rgba(79, 70, 229, 0.08), transparent 30%),
+    radial-gradient(
+      circle at top right,
+      rgba(79, 70, 229, 0.08),
+      transparent 30%
+    ),
     var(--bg);
 }
 
 .dashboard-main {
   min-width: 0;
-  padding: 28px;
+  padding: 20px;
+}
+
+.dashboard-container {
+  max-width: 1800px;
+  margin: 0 auto;
+  display: block;
 }
 
 .sidebar {
@@ -125,7 +142,9 @@ select:focus-visible {
   color: #cbd5e1;
   text-decoration: none;
   border-radius: 12px;
-  transition: background 0.2s ease, color 0.2s ease;
+  transition:
+    background 0.2s ease,
+    color 0.2s ease;
 }
 
 .sidebar__nav a:hover,
@@ -167,7 +186,9 @@ select:focus-visible {
   justify-content: center;
   gap: 8px;
   font-weight: 700;
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
 .sidebar__logout:hover {
@@ -194,10 +215,10 @@ select:focus-visible {
 
 .topbar {
   display: grid;
-  grid-template-columns: minmax(180px, 1fr) auto minmax(260px, 390px) auto auto;
+  grid-template-columns: auto auto 1fr auto auto;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .topbar__title span,
@@ -278,7 +299,9 @@ select:focus-visible {
   background: white;
   color: var(--text);
   box-shadow: var(--shadow-sm);
-  transition: transform 0.2s ease, border-color 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease;
 }
 
 .icon-button:hover {
@@ -391,7 +414,10 @@ select:focus-visible {
   align-items: center;
   gap: 8px;
   font-weight: 800;
-  transition: transform 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease;
 }
 
 .error-card button:hover,
@@ -406,15 +432,23 @@ select:focus-visible {
 .summary-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 16px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .summary-card {
-  min-height: 174px;
-  padding: 18px;
+  min-height: 120px;
+  padding: 14px;
   border-radius: var(--radius);
   overflow: hidden;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.summary-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-md);
 }
 
 .summary-card__top {
@@ -462,10 +496,10 @@ select:focus-visible {
 
 .workspace-grid {
   display: grid;
-  grid-template-columns: minmax(320px, 0.4fr) minmax(420px, 0.6fr);
-  gap: 20px;
-  align-items: stretch;
-  margin-bottom: 20px;
+  grid-template-columns: 60% 40%;
+  gap: 16px;
+  align-items: start;
+  margin-bottom: 12px;
 }
 
 .panel {
@@ -478,7 +512,7 @@ select:focus-visible {
   justify-content: space-between;
   align-items: flex-start;
   gap: 14px;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 
 .panel__header h2 {
@@ -495,7 +529,10 @@ select:focus-visible {
   border-radius: 18px;
   background: linear-gradient(180deg, #ffffff, #f8fafc);
   text-align: center;
-  transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+  transition:
+    border-color 0.2s ease,
+    transform 0.2s ease,
+    background 0.2s ease;
 }
 
 .dropzone:hover {
@@ -560,17 +597,20 @@ select:focus-visible {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 10px;
-  margin-top: 16px;
+  margin-top: 10px;
 }
 
 .upload-panel__actions button {
-  min-height: 44px;
+  min-height: 42px;
   border: 1px solid var(--border);
   border-radius: 14px;
   background: white;
   color: var(--text);
   font-weight: 900;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .upload-panel__actions .button-primary {
@@ -596,19 +636,19 @@ select:focus-visible {
 
 .progress-hero {
   display: grid;
-  grid-template-columns: 1fr 92px;
-  gap: 18px;
+  grid-template-columns: 1fr 80px;
+  gap: 10px;
   align-items: center;
-  margin-bottom: 16px;
-  padding: 18px;
-  border-radius: 18px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 12px;
   background: linear-gradient(135deg, #eef2ff, #ffffff 60%);
 }
 
 .progress-hero strong {
   display: block;
-  margin-bottom: 6px;
-  font-size: 2.4rem;
+  margin-bottom: 4px;
+  font-size: 1.8rem;
   line-height: 1;
   letter-spacing: 0;
 }
@@ -618,19 +658,18 @@ select:focus-visible {
 }
 
 .progress-ring {
-  width: 86px;
-  height: 86px;
+  width: 76px;
+  height: 76px;
   display: grid;
   place-items: center;
   border-radius: 50%;
   background:
-    conic-gradient(var(--primary) var(--progress), #e2e8f0 0),
-    #e2e8f0;
+    conic-gradient(var(--primary) var(--progress), #e2e8f0 0), #e2e8f0;
 }
 
 .progress-ring span {
-  width: 66px;
-  height: 66px;
+  width: 58px;
+  height: 58px;
   display: grid;
   place-items: center;
   border-radius: 50%;
@@ -648,8 +687,8 @@ select:focus-visible {
 }
 
 .progress-track {
-  height: 12px;
-  margin-bottom: 18px;
+  height: 10px;
+  margin-bottom: 12px;
 }
 
 .progress-track__bar {
@@ -659,75 +698,98 @@ select:focus-visible {
   background: linear-gradient(90deg, var(--primary), #06b6d4, var(--success));
 }
 
-.timeline {
-  display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.timeline__item {
+.pipeline-timeline {
   position: relative;
-  min-height: 86px;
-  padding: 12px;
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  background: #f8fafc;
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 12px;
+  padding: 12px 0 0;
 }
 
-.timeline__marker {
-  width: 28px;
-  height: 28px;
+.pipeline-timeline__line {
+  position: absolute;
+  top: 20px;
+  left: 6%;
+  right: 6%;
+  height: 4px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  z-index: 0;
+}
+
+.timeline-step {
+  position: relative;
+  z-index: 1;
   display: grid;
   place-items: center;
-  margin-bottom: 10px;
+  text-align: center;
+  gap: 8px;
+}
+
+.timeline-step__circle {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
   border-radius: 50%;
-  background: #e2e8f0;
-  color: #64748b;
+  background: #f8fafc;
+  color: transparent;
+  border: 2px solid #cbd5e1;
 }
 
-.timeline__item strong {
-  display: block;
-  font-size: 0.84rem;
+.timeline-step__percent {
+  font-weight: 700;
+  font-size: 0.85rem;
 }
 
-.timeline__item small {
-  display: block;
-  margin-top: 2px;
-  text-transform: capitalize;
-  font-size: 0.74rem;
+.timeline-step__label {
+  font-size: 0.78rem;
+  color: var(--muted);
+  line-height: 1.2;
+  max-width: 90px;
 }
 
-.timeline__item--running {
-  border-color: #c7d2fe;
+.timeline-step--completed .timeline-step__circle {
+  background: linear-gradient(180deg, #34d399, #22c55e);
+  border-color: #34d399;
+  color: white;
+}
+
+.timeline-step--running .timeline-step__circle {
+  background: linear-gradient(180deg, #6366f1, #4f46e5);
+  border-color: #6366f1;
+  color: white;
+}
+
+.timeline-step--current .timeline-step__circle {
   background: #eef2ff;
+  border-color: #818cf8;
+  color: #111827;
 }
 
-.timeline__item--running .timeline__marker {
-  background: var(--primary);
-  color: white;
+.timeline-step--upcoming .timeline-step__circle {
+  background: #f8fafc;
+  border-color: #cbd5e1;
 }
 
-.timeline__item--completed {
-  border-color: #a7f3d0;
-  background: #ecfdf5;
+.timeline-step--failed .timeline-step__circle {
+  background: #fee2e2;
+  border-color: #f87171;
+  color: #b91c1c;
 }
 
-.timeline__item--completed .timeline__marker {
-  background: var(--success);
-  color: white;
+.timeline-step--completed .timeline-step__percent,
+.timeline-step--running .timeline-step__percent,
+.timeline-step--current .timeline-step__percent {
+  color: #111827;
 }
 
-.timeline__item--failed {
-  border-color: #fecaca;
-  background: #fef2f2;
+.timeline-step--upcoming .timeline-step__percent {
+  color: #6b7280;
 }
 
-.timeline__item--failed .timeline__marker {
-  background: var(--danger);
-  color: white;
+.timeline-step--failed .timeline-step__percent {
+  color: #b91c1c;
 }
 
 .spin {
@@ -736,16 +798,16 @@ select:focus-visible {
 
 .metrics-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 10px;
-  margin-top: 16px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
 }
 
 .metrics-grid div {
-  min-height: 92px;
-  padding: 12px;
+  min-height: 68px;
+  padding: 10px;
   border: 1px solid var(--border);
-  border-radius: 16px;
+  border-radius: 12px;
   background: white;
 }
 
@@ -800,7 +862,7 @@ select:focus-visible {
 }
 
 .table-wrap {
-  max-height: 560px;
+  max-height: 350px;
   overflow: auto;
 }
 
@@ -999,6 +1061,43 @@ select:focus-visible {
   font-size: 0.92rem;
 }
 
+/* Responsive adjustments */
+@media (max-width: 1366px) {
+  .summary-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .workspace-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar {
+    grid-template-columns: auto 1fr auto auto;
+  }
+}
+
+@media (max-width: 768px) {
+  .dashboard-shell {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+
+  .summary-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .results-panel table {
+    min-width: 0;
+  }
+}
+
 .loading-overlay {
   position: fixed;
   inset: 0;
@@ -1164,7 +1263,9 @@ select:focus-visible {
   display: block;
   border-radius: 12px;
   object-fit: cover;
-  transition: transform 0.22s ease, filter 0.22s ease;
+  transition:
+    transform 0.22s ease,
+    filter 0.22s ease;
 }
 
 .image-button:hover .query-thumb,
@@ -1326,28 +1427,30 @@ select:focus-visible {
 }
 
 .loading-overlay__card {
-  width: min(100%, 440px);
-  gap: 18px;
-  padding: 34px;
+  width: min(100%, 360px);
+  gap: 14px;
+  padding: 26px;
 }
 
 .loading-progress-ring {
   position: relative;
-  width: 132px;
-  height: 132px;
+  width: 118px;
+  height: 118px;
   display: grid;
   place-items: center;
   border-radius: 50%;
-  background: conic-gradient(var(--primary) var(--progress), #e0e7ff 0);
-  box-shadow: inset 0 0 0 1px rgba(79, 70, 229, 0.08), 0 18px 40px rgba(79, 70, 229, 0.18);
+  background: conic-gradient(var(--primary) var(--progress), #e7efff 0);
+  box-shadow:
+    inset 0 0 0 1px rgba(79, 70, 229, 0.08),
+    0 14px 32px rgba(79, 70, 229, 0.14);
   transition: background 0.35s ease;
 }
 
 .loading-progress-ring::before {
   content: "";
   position: absolute;
-  width: 96px;
-  height: 96px;
+  width: 86px;
+  height: 86px;
   border-radius: 50%;
   background: white;
 }
@@ -1360,34 +1463,34 @@ select:focus-visible {
 
 .loading-progress-ring strong {
   color: var(--text);
-  font-size: 2rem;
+  font-size: 1.75rem;
   line-height: 1;
   letter-spacing: 0;
 }
 
 .loading-overlay__copy {
   display: grid;
-  gap: 6px;
+  gap: 4px;
   text-align: center;
 }
 
 .loading-overlay__copy strong {
   color: var(--text);
-  font-size: 1.2rem;
+  font-size: 1.05rem;
 }
 
 .loading-overlay__copy p {
-  max-width: 340px;
+  max-width: 300px;
   margin: 0;
   color: var(--muted);
 }
 
 .loading-linear {
   width: 100%;
-  height: 12px;
+  height: 10px;
   overflow: hidden;
   border-radius: 999px;
-  background: #e2e8f0;
+  background: #f1f5f9;
 }
 
 .loading-linear span {
@@ -1395,19 +1498,20 @@ select:focus-visible {
   height: 100%;
   width: 0;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--primary), #06b6d4, var(--success));
+  background: linear-gradient(90deg, #4f46e5, #22c55e);
 }
 
 .loading-overlay__percent {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 32px;
-  padding: 0 12px;
+  min-height: 28px;
+  padding: 0 14px;
   border-radius: 999px;
   background: #eef2ff;
-  color: var(--primary-strong);
-  font-weight: 900;
+  color: #4338ca;
+  font-weight: 700;
+  font-size: 0.95rem;
 }
 
 .loading-overlay__card.is-complete .loading-progress-ring {

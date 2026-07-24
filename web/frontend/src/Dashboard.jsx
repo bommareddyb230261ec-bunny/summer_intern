@@ -45,7 +45,9 @@ function Dashboard() {
 
   const matchesCount = results.length;
   const peopleCount = useMemo(
-    () => new Set(results.map((item) => item.label).filter(Boolean)).size || results.length,
+    () =>
+      new Set(results.map((item) => item.label).filter(Boolean)).size ||
+      results.length,
     [results],
   );
 
@@ -243,57 +245,74 @@ function Dashboard() {
       <Sidebar profile={profile} onLogout={handleLogout} />
 
       <main className="dashboard-main">
-        <Navbar profile={profile} status={status} message={progressLabel} />
+        <div className="dashboard-container">
+          <Navbar profile={profile} status={status} message={progressLabel} />
 
-        {status === "COMPLETED" ? (
-          <section className="success-banner" aria-live="polite">
-            <strong>Analysis completed</strong>
-            <span>
-              {matchesCount} matches found. Execution status is stored under job {jobId}.
-            </span>
-          </section>
-        ) : null}
+          {status === "COMPLETED" ? (
+            <section className="success-banner" aria-live="polite">
+              <strong>Analysis completed</strong>
+              <span>
+                {matchesCount} matches found. Execution status is stored under
+                job {jobId}.
+              </span>
+            </section>
+          ) : null}
 
-        <ErrorState message={error} onRetry={() => setError("")} />
+          <ErrorState message={error} onRetry={() => setError("")} />
 
-        <SummaryCards
-          queryFile={queryFile}
-          queryPreview={queryPreview}
-          videoCount={videoFiles.length}
-          peopleCount={peopleCount}
-          matchesCount={matchesCount}
-        />
-
-        <section className="workspace-grid">
-          <UploadPanel
+          <SummaryCards
             queryFile={queryFile}
-            videoFiles={videoFiles}
-            uploading={uploading}
-            loading={loading}
-            jobId={jobId}
-            canStart={canStart}
-            onQueryChange={handleQueryChange}
-            onVideosChange={handleVideosChange}
-            onUploadQuery={uploadQuery}
-            onUploadVideos={uploadVideos}
-            onStartProcessing={startProcessing}
-          />
-
-          <PipelineProgress
-            status={status}
-            stage={stage}
-            message={progressLabel}
-            progress={progress}
+            queryPreview={queryPreview}
             videoCount={videoFiles.length}
             peopleCount={peopleCount}
+            matchesCount={matchesCount}
           />
-        </section>
 
-        <ResultsTable results={results} queryPreview={queryPreview} onSelectResult={setSelectedResult} />
+          <section className="workspace-grid">
+            <UploadPanel
+              queryFile={queryFile}
+              videoFiles={videoFiles}
+              uploading={uploading}
+              loading={loading}
+              jobId={jobId}
+              canStart={canStart}
+              onQueryChange={handleQueryChange}
+              onVideosChange={handleVideosChange}
+              onUploadQuery={uploadQuery}
+              onUploadVideos={uploadVideos}
+              onStartProcessing={startProcessing}
+            />
+
+            <PipelineProgress
+              status={status}
+              stage={stage}
+              message={progressLabel}
+              progress={progress}
+              videoCount={videoFiles.length}
+              peopleCount={peopleCount}
+            />
+          </section>
+
+          <ResultsTable
+            results={results}
+            queryPreview={queryPreview}
+            onSelectResult={setSelectedResult}
+          />
+        </div>
       </main>
 
-      <ResultDrawer result={selectedResult} queryPreview={queryPreview} onClose={() => setSelectedResult(null)} />
-      <LoadingOverlay show={loading} message={progressLabel} progress={progress} stage={stage} status={status} />
+      <ResultDrawer
+        result={selectedResult}
+        queryPreview={queryPreview}
+        onClose={() => setSelectedResult(null)}
+      />
+      <LoadingOverlay
+        show={loading}
+        message={progressLabel}
+        progress={progress}
+        stage={stage}
+        status={status}
+      />
     </div>
   );
 }

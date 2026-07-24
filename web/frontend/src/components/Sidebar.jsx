@@ -28,10 +28,10 @@ function Sidebar({ profile, onLogout }) {
   return (
     <aside className="sidebar" aria-label="Primary">
       <div className="sidebar__brand">
-        <div className="sidebar__mark">N</div>
+        <div className="sidebar__mark">A</div>
         <div>
-          <strong>NSG AI</strong>
-          <span>Surveillance</span>
+          <strong>Face Re-ID</strong>
+          <span>Video Sequences</span>
         </div>
       </div>
 

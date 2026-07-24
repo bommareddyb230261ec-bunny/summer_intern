@@ -7,18 +7,20 @@ const STAGE_LABELS = {
   STARTING: "Preparing Pipeline...",
   FRAME_EXTRACTION: "Extracting Frames...",
   PERSON_DETECTION: "Detecting Persons...",
-  PERSON_CROPPING: "Cropping Persons...",
-  FACE_DETECTION: "Detecting Faces...",
-  FACE_ALIGNMENT: "Aligning Faces...",
+  FACE_ALIGNMENT: "Detecting Faces...",
   EMBEDDING_GENERATION: "Generating Embeddings...",
-  FAISS_MATCHING: "Building FAISS Index...",
   QUERY_MATCHING: "Matching Query Face...",
-  SAVING_RESULTS: "Finalizing Results...",
   COMPLETED: "Analysis Completed Successfully",
   FAILED: "Analysis Failed",
 };
 
-function LoadingOverlay({ show, message, progress = 0, stage = "QUEUED", status = "QUEUED" }) {
+function LoadingOverlay({
+  show,
+  message,
+  progress = 0,
+  stage = "QUEUED",
+  status = "QUEUED",
+}) {
   const safeProgress = Math.max(0, Math.min(100, Number(progress) || 0));
   const isComplete = status === "COMPLETED" || safeProgress >= 100;
   const isFailed = status === "FAILED";
@@ -45,13 +47,23 @@ function LoadingOverlay({ show, message, progress = 0, stage = "QUEUED", status 
               style={{ "--progress": `${safeProgress * 3.6}deg` }}
               aria-label={`${safeProgress}% complete`}
             >
-              {isComplete ? <CheckCircle2 size={38} aria-hidden="true" /> : null}
+              {isComplete ? (
+                <CheckCircle2 size={38} aria-hidden="true" />
+              ) : null}
               {isFailed ? <AlertTriangle size={38} aria-hidden="true" /> : null}
-              {!isComplete && !isFailed ? <strong>{safeProgress}%</strong> : null}
+              {!isComplete && !isFailed ? (
+                <strong>{safeProgress}%</strong>
+              ) : null}
             </div>
 
             <div className="loading-overlay__copy">
-              <strong>{isComplete ? "Analysis Completed Successfully" : isFailed ? "Analysis Failed" : stageLabel}</strong>
+              <strong>
+                {isComplete
+                  ? "Analysis Completed Successfully"
+                  : isFailed
+                    ? "Analysis Failed"
+                    : stageLabel}
+              </strong>
               <p>{isComplete ? "Refreshing results table..." : message}</p>
             </div>
 

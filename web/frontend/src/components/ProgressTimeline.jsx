@@ -13,47 +13,66 @@ const STAGE_ORDER = [
 ];
 
 const STAGE_LABELS = {
-  QUERY_UPLOADED: "Upload",
-  VIDEOS_UPLOADED: "Video Intake",
-  FRAME_EXTRACTION: "Frame Extraction",
-  PERSON_DETECTION: "Person Detection",
-  FACE_ALIGNMENT: "Face Alignment",
-  EMBEDDING_GENERATION: "Embedding Generation",
-  QUERY_MATCHING: "FAISS Search",
-  COMPLETED: "Results Ready",
+  QUERY_UPLOADED: "Preparing Pipeline",
+  VIDEOS_UPLOADED: "Extracting Frames",
+  FRAME_EXTRACTION: "Detecting Persons",
+  PERSON_DETECTION: "Cropping Persons",
+  FACE_ALIGNMENT: "Detecting Faces",
+  EMBEDDING_GENERATION: "Cropping Faces",
+  QUERY_MATCHING: "Generating Face Embeddings",
+  COMPLETED: "Face Retrieval Completed",
+};
+
+const STAGE_PERCENT = {
+  QUERY_UPLOADED: "8%",
+  VIDEOS_UPLOADED: "20%",
+  FRAME_EXTRACTION: "40%",
+  PERSON_DETECTION: "55%",
+  FACE_ALIGNMENT: "70%",
+  EMBEDDING_GENERATION: "80%",
+  QUERY_MATCHING: "95%",
+  COMPLETED: "100%",
 };
 
 function stageState(stage, status, item) {
   if (status === "FAILED" && stage === item) return "failed";
   if (status === "COMPLETED") return "completed";
+
   const currentIndex = STAGE_ORDER.indexOf(stage);
   const itemIndex = STAGE_ORDER.indexOf(item);
+
+  if (currentIndex === -1) {
+    return itemIndex === 0 ? "current" : "upcoming";
+  }
+
   if (itemIndex < currentIndex) return "completed";
-  if (itemIndex === currentIndex && status === "RUNNING") return "running";
-  if (itemIndex === currentIndex && stage !== "IDLE") return "completed";
-  return "waiting";
+  if (itemIndex === currentIndex)
+    return status === "RUNNING" ? "running" : "current";
+  return "upcoming";
 }
 
 function ProgressTimeline({ stage, status }) {
   return (
-    <ol className="timeline" aria-label="AI pipeline stages">
+    <div className="pipeline-timeline" aria-label="AI pipeline stages">
+      <div className="pipeline-timeline__line" />
       {STAGE_ORDER.map((item) => {
         const state = stageState(stage, status, item);
         return (
-          <li className={`timeline__item timeline__item--${state}`} key={item}>
-            <span className="timeline__marker">
-              {state === "completed" ? <Check size={15} /> : null}
-              {state === "running" ? <Loader2 size={15} className="spin" /> : null}
-              {state === "failed" ? <X size={15} /> : null}
+          <div className={`timeline-step timeline-step--${state}`} key={item}>
+            <span className="timeline-step__circle" aria-hidden="true">
+              {state === "completed" ? <Check size={14} /> : null}
+              {state === "running" ? (
+                <Loader2 size={14} className="spin" />
+              ) : null}
             </span>
-            <div>
-              <strong>{STAGE_LABELS[item]}</strong>
-              <small>{state}</small>
-            </div>
-          </li>
+            <span className="timeline-step__percent">
+              {STAGE_PERCENT[item]}
+            </span>
+            <span className="timeline-step__label">{STAGE_LABELS[item]}</span>
+          </div>
         );
       })}
-    </ol>
+    </div>
   );
 }
 
