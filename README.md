@@ -2,21 +2,45 @@
 
 An end-to-end AI-powered surveillance system that identifies a person from one or more surveillance videos using a single query face image.
 
-The system combines **Computer Vision**, **Deep Learning**, **Vector Similarity Search**, and **Full Stack Web Development** to provide an interactive dashboard capable of processing surveillance videos and locating the queried individual automatically.
+This project combines computer vision, deep learning, vector similarity search, and full-stack web development into a practical application for automated person search in large video collections.
 
 ---
 
-# Problem Statement
+# Project Overview
 
-Modern surveillance systems generate massive amounts of video footage from CCTV cameras, drones, and body-worn cameras. Manually searching these videos for a particular individual is time-consuming, error-prone, and impractical.
+Face re-identification is an important capability in modern surveillance and security systems. In many real-world environments, operators must search through thousands of hours of footage to find a specific person, which is slow, costly, and often unreliable when performed manually. Small details, changing viewpoints, varying lighting, and large volumes of data make this task difficult even for experienced analysts.
 
-This project addresses that challenge by enabling an operator to upload a **query face image** along with multiple surveillance videos. The system automatically processes the videos, detects faces, generates feature embeddings, performs similarity search, and identifies whether the queried person appears in any uploaded video.
+This project addresses that problem by providing an end-to-end AI workflow that accepts a query face image, analyzes surveillance videos, detects people and faces, generates feature embeddings, and returns ranked matches with timestamps and visual previews. The system is designed to reduce the time required to locate a person in video data while improving consistency and scalability.
+
+The application can be used in security monitoring, forensic review, access control investigations, public safety operations, and research environments where efficient video search is required.
+
+---
+
+# Why This Project Exists
+
+Large surveillance systems often produce thousands of hours of video footage every day. Manually inspecting this content is not practical for most organizations, especially when the search target is a single individual. Human review introduces fatigue, delays, and occasional errors, while traditional keyword-based or manual search methods are inefficient for visual evidence.
+
+This project exists to automate the search process using AI. Instead of requiring an operator to scan hours of video manually, the system can process the footage automatically, detect relevant face instances, compare them against a query image, and present the most likely matches in a structured and interpretable way.
+
+---
+
+# Key Objectives
+
+The project is built around the following objectives:
+
+- Detect people automatically in video frames
+- Detect faces within those person regions
+- Generate discriminative embeddings for each face
+- Search efficiently over large embedding collections
+- Return timestamps and matched frames for review
+- Provide visualization for results and analysis
+- Build an end-to-end AI application that is usable from a web dashboard
 
 ---
 
 # Key Features
 
-- Google OAuth Login with JWT Authentication
+- Google OAuth login with JWT authentication
 - Upload a query face image
 - Upload multiple surveillance videos
 - Automatic frame extraction
@@ -28,143 +52,126 @@ This project addresses that challenge by enabling an operator to upload a **quer
 - FastAPI backend with REST APIs
 - Processing status tracking
 - Match visualization with timestamps
-- Result management through dashboard
+- Result management through the dashboard
 
 ---
 
-# System Architecture
+# Complete System Workflow
 
-```
-                    React Dashboard
-                           │
-                           ▼
-                    FastAPI Backend
-                           │
-                           ▼
-                 AI Processing Pipeline
-                           │
-        ┌─────────────────────────────────┐
-        │ Video Frame Extraction          │
-        │ Person Detection (YOLO)         │
-        │ Face Detection                  │
-        │ Face Alignment                  │
-        │ ArcFace Embedding Generation    │
-        │ FAISS Similarity Search         │
-        └─────────────────────────────────┘
-                           │
-                           ▼
-                     Matching Results
-                           │
-                           ▼
-                  Dashboard Visualization
-```
+The complete workflow of the system is designed to move from user interaction to intelligent matching in a clear and structured way.
+
+1. Login
+
+   Users authenticate through the application to access the dashboard securely. Authentication is handled through the platform’s backend and protected routes.
+
+2. Upload Query Image
+
+   A user provides a reference face image representing the person of interest. This image becomes the search query for the system.
+
+3. Upload Videos
+
+   One or more surveillance videos are uploaded for analysis. These videos are processed offline by the backend pipeline.
+
+4. Backend
+
+   The backend receives the uploaded files, stores them, manages the job lifecycle, and coordinates the execution of the AI pipeline.
+
+5. AI Pipeline
+
+   The system extracts frames, detects persons, detects faces, aligns the face regions, generates embeddings, and performs similarity search against the query image.
+
+6. Results
+
+   The pipeline produces ranked matches with similarity scores, timestamps, and preview images that can be reviewed by the user.
+
+7. Dashboard
+
+   The dashboard displays the results in a user-friendly interface so that the operator can inspect the matches quickly and understand the output.
 
 ---
 
 # AI Pipeline
 
-The complete processing pipeline consists of the following stages.
+The AI pipeline is the core of the system. Each stage is designed to transform raw video content into searchable, interpretable results.
 
-## 1. Video Upload
+## 1. Frame Extraction
 
-The user uploads
+- Purpose: Convert videos into a sequence of individual frames that can be processed by computer vision models.
+- Input: Uploaded video files.
+- Output: Image frames, each associated with its timestamp.
+- Reason: Video is a temporal medium, but most vision models operate on images. Frame extraction makes the content processable while preserving timing information for later result visualization.
 
-- One query face image
-- One or more surveillance videos
+## 2. YOLO Person Detection
 
----
+- Purpose: Detect persons in each frame and localize their positions.
+- Input: Extracted video frames.
+- Output: Bounding boxes and cropped person regions.
+- Reason: Running face detection over the entire frame would be inefficient and less accurate. Person detection narrows the search area to relevant regions first.
 
-## 2. Frame Extraction
+## 3. Face Detection
 
-Each uploaded video is converted into image frames.
+- Purpose: Identify the face regions within the detected person crops.
+- Input: Cropped person images.
+- Output: Face bounding boxes and face crops.
+- Reason: This step isolates the facial region and avoids unnecessary processing of the rest of the body or background.
 
-Purpose:
+## 4. Face Alignment
 
-- Reduce video into processable images
-- Preserve timestamps for later visualization
+- Purpose: Normalize detected faces before feature extraction.
+- Input: Detected face crops.
+- Output: Aligned face images with consistent orientation and geometry.
+- Reason: Alignment helps the embedding model focus on meaningful facial structure and reduces variability caused by pose or scale differences.
 
----
+## 5. ArcFace Embedding Generation
 
-## 3. Person Detection
+- Purpose: Convert every aligned face into a dense feature vector.
+- Input: Aligned face images.
+- Output: High-dimensional face embeddings.
+- Reason: ArcFace produces representations that capture identity-related facial characteristics, making it possible to compare faces numerically and robustly.
 
-YOLO detects every person present in each frame.
+## 6. FAISS Similarity Search
 
-Output:
+- Purpose: Search the embedding database quickly and efficiently.
+- Input: Query embedding and the database of extracted face embeddings.
+- Output: Similarity-ranked candidate matches.
+- Reason: FAISS enables fast nearest-neighbor search, which is essential when the system processes many frames and faces.
 
-- Cropped person images
-- Bounding box coordinates
+## 7. Cosine Similarity
 
----
+- Purpose: Measure how similar the query face is to each candidate embedding.
+- Input: Query embedding and candidate embeddings.
+- Output: Similarity scores for ranking.
+- Reason: Cosine similarity provides a meaningful measure of directional similarity between feature vectors, which is well suited for face embeddings.
 
-## 4. Face Detection
+## 8. Threshold Decision
 
-Faces are extracted only from detected person regions.
+- Purpose: Decide whether a candidate should be treated as a valid match.
+- Input: Similarity scores and configured thresholds.
+- Output: Accepted or rejected matches.
+- Reason: The threshold prevents weak or ambiguous matches from being treated as true positives and improves the reliability of the output.
 
-Benefits:
+## 9. Result Visualization
 
-- Faster processing
-- Reduced false positives
-
----
-
-## 5. Face Embedding Generation
-
-ArcFace converts every detected face into a fixed-length feature embedding.
-
-Each embedding represents the unique facial characteristics of an individual.
-
----
-
-## 6. Similarity Search
-
-The query face embedding is compared against all extracted embeddings using FAISS.
-
-FAISS enables extremely fast nearest-neighbor search even for large embedding databases.
-
----
-
-## 7. Result Generation
-
-For every detected match, the system returns
-
-- Video Name
-- Timestamp
-- Similarity Score
-- Preview Image
-
-These results are displayed on the dashboard.
+- Purpose: Present matched results clearly to the user.
+- Input: Accepted matches, timestamps, and preview images.
+- Output: Visual previews, match metadata, and dashboard-ready results.
+- Reason: A useful AI system should not only identify matches, but also make them understandable and inspectable for the end user.
 
 ---
 
-# Dashboard Workflow
+# System Architecture
 
-```
-User Login
-        │
-        ▼
-Dashboard
-        │
-        ▼
-Upload Query Face
-        │
-        ▼
-Upload Videos
-        │
-        ▼
-Start Processing
-        │
-        ▼
-FastAPI
-        │
-        ▼
-ArcFace Pipeline
-        │
-        ▼
-Results
-        │
-        ▼
-Dashboard
-```
+## Overall System Architecture
+
+![Overall Architecture](overall1.png)
+
+The overall architecture is organized around a user-facing web application and a backend processing engine. The frontend allows users to log in, upload images and videos, and review results. The backend manages authentication, file storage, job execution, and API communication. The AI component processes the uploaded media, generates embeddings, performs similarity matching, and returns structured results that are displayed in the dashboard.
+
+## AI Processing Pipeline
+
+![ML Pipeline](ml1.png)
+
+The pipeline begins with video input, then moves through frame extraction, person detection, face detection, face alignment, embedding generation, and similarity matching. The output is a set of candidate matches that are ranked and presented to the user with associated timestamps and previews. This flow reflects the end-to-end design of the application, from raw media input to actionable results.
 
 ---
 
@@ -180,8 +187,6 @@ Dashboard
 - YOLO
 - FAISS
 
----
-
 ## Backend
 
 - FastAPI
@@ -191,35 +196,28 @@ Dashboard
 - PostgreSQL
 - Pydantic
 
----
-
 ## Frontend
 
 - React
 - Vite
 - Axios
-
----
-
-# Checking Output Results
-
-Processed output files are saved in the `results/` folder in the project root.
-
-To inspect the results:
-
-- Open the `results/` directory.
-- Each file is a JSON result file containing match details from the processing pipeline.
-- Look for file names such as `results_<uuid>.json`.
-- Use a JSON viewer or editor to open the file and see the complete output data.
-
-If the dashboard is running, the same result files are generated by the backend and can be viewed in the web interface as well.
-
 - React Router
 - HTML
 - CSS
 - JavaScript
 
----
+## Database
+
+- SQLite database used by the web application
+
+## Authentication
+
+- Google OAuth login
+- JWT-based session authentication
+
+## Deployment
+
+- Local development workflow with backend and frontend services
 
 ## Development Tools
 
@@ -231,28 +229,27 @@ If the dashboard is running, the same result files are generated by the backend 
 
 # Project Structure
 
-```
+```text
 NSG AI Surveillance Dashboard/
 
 ├── arcface/
-│
-│   AI Pipeline
-│
-│   • Video Frame Extraction
-│   • Person Detection
-│   • Face Detection
-│   • Embedding Generation
-│   • Query Matching
+│   Core AI processing modules for frame handling, person detection,
+│   face detection, embedding generation, and query matching.
 │
 ├── web/
+│   Backend and frontend application code.
 │
-│   app/
-│       FastAPI Backend
+│   ├── app/
+│   │   FastAPI backend, authentication logic, database models,
+│   │   API routes, and processing pipeline orchestration.
+│   │
+│   ├── frontend/
+│   │   React-based dashboard interface for user interaction.
+│   │
+│   └── requirements.txt
 │
-│   frontend/
-│       React Dashboard
-│
-│   requirements.txt
+├── Results/
+│   Output results generated by the processing pipeline.
 │
 └── README.md
 ```
@@ -261,7 +258,7 @@ NSG AI Surveillance Dashboard/
 
 # Authentication Flow
 
-```
+```text
 Google Login
 
 ↓
@@ -281,13 +278,13 @@ JWT Generation
 Dashboard Access
 ```
 
-Only authenticated users can access the dashboard.
+Only authenticated users can access the dashboard. The authentication layer protects the application and ensures that the processing workflow is available only to authorized users.
 
 ---
 
 # Backend Workflow
 
-```
+```text
 Upload Query
 
 ↓
@@ -315,17 +312,57 @@ Return JSON
 Dashboard
 ```
 
+The backend coordinates everything from request handling to processing execution and result generation. It ensures that the AI pipeline is invoked in a consistent and trackable manner.
+
 ---
 
 # Output
 
-For every successful match the system returns
+After processing is complete, the system generates both structured data and visual outputs for easy inspection.
 
-- Query Face
-- Video Name
+## Results Folder
+
+All generated outputs are stored in the results/ directory.
+
+The folder may contain:
+
+- Matched face images
+- Cropped face images
+- Matched video frames
+- Timestamp information
+- Similarity scores
+- JSON result files
+- Visualization images generated during processing
+
+Each JSON file contains metadata such as:
+
+- Query image details
+- Matched video name
 - Timestamp
-- Similarity Score
-- Preview Image
+- Similarity score
+- Match confidence
+- File paths to the generated images
+
+The generated images allow users to visually verify the identified person without manually searching through the original video.
+
+## Dashboard Results
+
+The same information is also displayed through the React dashboard, where users can:
+
+- View the query image
+- Inspect matched frames
+- Review timestamps
+- Compare similarity scores
+- Open generated result images
+- Monitor processing status
+
+---
+
+# Documentation
+
+## Project Report
+
+For readers interested in implementation details and design decisions, please refer to the accompanying project report. It provides a more detailed explanation of the AI models, pipeline design, FAISS indexing approach, ArcFace integration, architecture, and implementation choices used in the project.
 
 ---
 
@@ -383,21 +420,27 @@ npm run dev
 
 # Future Improvements
 
-- Real-time CCTV support
-- Multi-camera tracking
-- Distributed processing
-- Cloud deployment
-- GPU optimization
-- Person re-identification
-- Automatic report generation
+The system has a strong foundation for practical use, and several improvements can further increase its value. Future work may include real-time CCTV support, multi-camera tracking, distributed processing for larger workloads, cloud deployment, GPU acceleration, more advanced person re-identification methods, and automated reporting features. These enhancements would improve scalability, robustness, and usability for production environments.
 
 ---
 
 # Skills Demonstrated
 
-This project demonstrates practical experience in
+This project demonstrates practical experience in:
 
 - Computer Vision
+- Deep Learning
+- Face Recognition
+- Embedding Models
+- Similarity Search
+- REST APIs
+- JWT
+- OAuth
+- React
+- FastAPI
+- Database Design
+- Software Engineering
+- AI System Design
 - Deep Learning
 - Face Recognition
 - REST API Development
