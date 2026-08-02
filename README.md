@@ -163,15 +163,71 @@ The AI pipeline is the core of the system. Each stage is designed to transform r
 
 ## Overall System Architecture
 
-![Overall Architecture](overall1.png)
+<p align="center">
+  <img src="images/overall1.png" alt="Overall System Architecture" width="100%">
+</p>
 
 The overall architecture is organized around a user-facing web application and a backend processing engine. The frontend allows users to log in, upload images and videos, and review results. The backend manages authentication, file storage, job execution, and API communication. The AI component processes the uploaded media, generates embeddings, performs similarity matching, and returns structured results that are displayed in the dashboard.
 
 ## AI Processing Pipeline
 
-![ML Pipeline](ml1.png)
+<p align="center">
+  <img src="images/ml1.png" alt="AI Processing Pipeline" width="100%">
+</p>
 
 The pipeline begins with video input, then moves through frame extraction, person detection, face detection, face alignment, embedding generation, and similarity matching. The output is a set of candidate matches that are ranked and presented to the user with associated timestamps and previews. This flow reflects the end-to-end design of the application, from raw media input to actionable results.
+
+---
+
+## Application Screenshots
+
+### Login Page
+
+<p align="center">
+  <img src="images/login_page.png" alt="Login Page" width="90%">
+</p>
+
+A secure sign-in experience for accessing the dashboard.
+
+### Dashboard
+
+<p align="center">
+  <img src="images/dashboard.png" alt="Dashboard" width="90%">
+</p>
+
+The main interface where users upload media and review results.
+
+### Processing View
+
+<p align="center">
+  <img src="images/processing.png" alt="Processing View" width="90%">
+</p>
+
+Users can monitor the ongoing AI processing workflow in real time.
+
+### Output Results
+
+<p align="center">
+  <img src="images/output.png" alt="Output Results" width="90%">
+</p>
+
+The output view highlights matched results with supporting metadata.
+
+### Results Gallery
+
+<p align="center">
+  <img src="images/results.png" alt="Results Gallery" width="90%">
+</p>
+
+Generated result images and previews are displayed for visual verification.
+
+### Mis-Matching Analysis
+
+<p align="center">
+  <img src="images/mis_matching.png" alt="Mis-Matching Analysis" width="90%">
+</p>
+
+The system can also present example cases where a candidate match is rejected or flagged as uncertain.
 
 ---
 
