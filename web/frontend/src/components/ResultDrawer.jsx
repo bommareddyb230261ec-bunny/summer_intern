@@ -1,19 +1,33 @@
 ﻿import { memo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Box, Crosshair, ImageIcon, MapPinned, ShieldCheck, X } from "lucide-react";
+import {
+  Box,
+  Crosshair,
+  ImageIcon,
+  MapPinned,
+  ShieldCheck,
+  X,
+} from "lucide-react";
 import StatusBadge from "./StatusBadge";
 import { PlaceholderAvatar, SmartImage, imageCandidates } from "./ResultsTable";
 
 function fieldValue(result, keys, fallback = "Unavailable") {
-  const value = keys.map((key) => result?.[key]).find((item) => item !== undefined && item !== null && item !== "");
+  const value = keys
+    .map((key) => result?.[key])
+    .find((item) => item !== undefined && item !== null && item !== "");
   if (Array.isArray(value)) return value.join(", ");
   if (typeof value === "object" && value) return JSON.stringify(value);
   return value || fallback;
 }
 
-function ResultDrawer({ result, queryPreview, onClose }) {
-  const similarity = result ? Math.round(Number(result.similarity || 0) * 100) : 0;
-  const imageSources = result?.imageSources?.length ? result.imageSources : imageCandidates(result || {});
+function ResultDrawer({ result, queryPreview, liveQueryPreview, onClose }) {
+  const similarity = result
+    ? Math.round(Number(result.similarity || 0) * 100)
+    : 0;
+  const previewSource = queryPreview || liveQueryPreview;
+  const imageSources = result?.imageSources?.length
+    ? result.imageSources
+    : imageCandidates(result || {});
   const status = similarity >= 75 ? "COMPLETED" : "QUEUED";
 
   return (
@@ -42,7 +56,12 @@ function ResultDrawer({ result, queryPreview, onClose }) {
                 <span>Match Detail</span>
                 <h2>{result.face_id}</h2>
               </div>
-              <button className="icon-button" type="button" onClick={onClose} aria-label="Close details">
+              <button
+                className="icon-button"
+                type="button"
+                onClick={onClose}
+                aria-label="Close details"
+              >
                 <X size={18} aria-hidden="true" />
               </button>
             </div>
@@ -60,8 +79,13 @@ function ResultDrawer({ result, queryPreview, onClose }) {
               </div>
               <div>
                 <span>Query Face</span>
-                {queryPreview ? (
-                  <img className="drawer-query-image" src={queryPreview} alt="Uploaded query face" loading="lazy" />
+                {previewSource ? (
+                  <img
+                    className="drawer-query-image"
+                    src={previewSource}
+                    alt="Uploaded query face"
+                    loading="lazy"
+                  />
                 ) : (
                   <PlaceholderAvatar label="Q" />
                 )}
@@ -85,13 +109,24 @@ function ResultDrawer({ result, queryPreview, onClose }) {
               <div>
                 <ImageIcon size={17} aria-hidden="true" />
                 <span>Frame name</span>
-                <strong>{fieldValue(result, ["frame_name", "frame", "frame_id", "timestamp", "face_id"])}</strong>
+                <strong>
+                  {fieldValue(result, [
+                    "frame_name",
+                    "frame",
+                    "frame_id",
+                    "timestamp",
+                    "face_id",
+                  ])}
+                </strong>
               </div>
               <div>
                 <ShieldCheck size={17} aria-hidden="true" />
                 <span>Match status</span>
                 <strong>
-                  <StatusBadge status={status} label={similarity >= 75 ? "Match" : "Review"} />
+                  <StatusBadge
+                    status={status}
+                    label={similarity >= 75 ? "Match" : "Review"}
+                  />
                 </strong>
               </div>
               <div>
@@ -102,7 +137,14 @@ function ResultDrawer({ result, queryPreview, onClose }) {
               <div>
                 <Crosshair size={17} aria-hidden="true" />
                 <span>Bounding box</span>
-                <strong>{fieldValue(result, ["bounding_box", "bbox", "box", "face_bbox"])}</strong>
+                <strong>
+                  {fieldValue(result, [
+                    "bounding_box",
+                    "bbox",
+                    "box",
+                    "face_bbox",
+                  ])}
+                </strong>
               </div>
             </div>
           </motion.aside>

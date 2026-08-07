@@ -33,6 +33,7 @@ from app.schemas import (
 )
 from app.pipeline import save_query_file, save_video_files, run_job
 from app.services.job_manager import job_manager
+from app.services.live_camera import live_camera_manager
 
 router = APIRouter()
 logger = logging.getLogger(__name__)
@@ -280,6 +281,83 @@ async def upload_videos(
         raise
 
     return JobResponse(job_id=job_id, message=f"Videos uploaded: {[p.name for p in saved_paths]}")
+
+
+@router.post(
+    "/live/query",
+    response_model=JobResponse,
+    responses={401: {"model": ErrorResponse}},
+)
+async def live_upload_query(
+    file: UploadFile = File(...),
+    current_user: User = Depends(get_current_user),
+) -> JobResponse:
+    if file.filename == "":
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Query face file is required.",
+        )
+    try:
+        saved = live_camera_manager.save_query_file(file)
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
+        ) from exc
+
+    return JobResponse(job_id="live_camera", message=f"Live query face uploaded and saved: {saved.name}")
+
+
+@router.post(
+    "/live/start",
+    response_model=MessageResponse,
+    responses={401: {"model": ErrorResponse}},
+)
+async def live_start_camera(
+    current_user: User = Depends(get_current_user),
+) -> MessageResponse:
+    try:
+        live_camera_manager.start_camera()
+    except Exception as exc:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=str(exc),
+        ) from exc
+    return MessageResponse(message="Live camera started.")
+
+
+@router.post(
+    "/live/stop",
+    response_model=MessageResponse,
+    responses={401: {"model": ErrorResponse}},
+)
+async def live_stop_camera(
+    current_user: User = Depends(get_current_user),
+) -> MessageResponse:
+    live_camera_manager.stop_camera()
+    return MessageResponse(message="Live camera stopped.")
+
+
+@router.get(
+    "/live/frame",
+    response_model=dict,
+    responses={401: {"model": ErrorResponse}},
+)
+async def live_get_frame(
+    current_user: User = Depends(get_current_user),
+) -> dict:
+    return live_camera_manager.frame_payload()
+
+
+@router.get(
+    "/live/status",
+    response_model=dict,
+    responses={401: {"model": ErrorResponse}},
+)
+async def live_get_status(
+    current_user: User = Depends(get_current_user),
+) -> dict:
+    return live_camera_manager.status_payload()
 
 
 @router.post(

@@ -1,11 +1,21 @@
 ﻿import { memo, useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, Eye, ImageIcon, Search, SlidersHorizontal, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Eye,
+  ImageIcon,
+  Search,
+  SlidersHorizontal,
+  X,
+} from "lucide-react";
 import EmptyState from "./EmptyState";
 import StatusBadge from "./StatusBadge";
 
 const PAGE_SIZE = 8;
-const API_BASE_URL = (import.meta.env.VITE_API_URL || "http://localhost:8000").replace(/\/$/, "");
+const API_BASE_URL = (
+  import.meta.env.VITE_API_URL || "http://localhost:8000"
+).replace(/\/$/, "");
 const IMAGE_EXTENSIONS = /\.(avif|gif|jpe?g|png|webp)$/i;
 
 function resultSimilarity(item) {
@@ -75,13 +85,21 @@ function SmartImage({ sources, alt, className, fallbackLabel, onClick }) {
 
   if (!source) {
     if (sources.length) {
-      console.warn("Matched face image could not be loaded from candidate paths:", sources);
+      console.warn(
+        "Matched face image could not be loaded from candidate paths:",
+        sources,
+      );
     }
     return <PlaceholderAvatar label={fallbackLabel} />;
   }
 
   return (
-    <button className="image-button" type="button" onClick={() => onClick(source)} aria-label={`Preview ${alt}`}>
+    <button
+      className="image-button"
+      type="button"
+      onClick={() => onClick(source)}
+      aria-label={`Preview ${alt}`}
+    >
       {!loaded ? <span className="image-skeleton" /> : null}
       <motion.img
         key={source}
@@ -97,7 +115,9 @@ function SmartImage({ sources, alt, className, fallbackLabel, onClick }) {
           setSourceIndex((current) => current + 1);
         }}
       />
-      {sourceIndex >= sources.length ? <PlaceholderAvatar label={fallbackLabel} /> : null}
+      {sourceIndex >= sources.length ? (
+        <PlaceholderAvatar label={fallbackLabel} />
+      ) : null}
     </button>
   );
 }
@@ -115,14 +135,24 @@ function ImagePreviewModal({ imageUrl, onClose }) {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
         >
-          <button className="image-modal__backdrop" type="button" onClick={onClose} aria-label="Close image preview" />
+          <button
+            className="image-modal__backdrop"
+            type="button"
+            onClick={onClose}
+            aria-label="Close image preview"
+          />
           <motion.div
             className="image-modal__content"
             initial={{ opacity: 0, y: 18, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 18, scale: 0.98 }}
           >
-            <button className="icon-button" type="button" onClick={onClose} aria-label="Close image preview">
+            <button
+              className="icon-button"
+              type="button"
+              onClick={onClose}
+              aria-label="Close image preview"
+            >
               <X size={18} aria-hidden="true" />
             </button>
             <img src={imageUrl} alt="Large matched face preview" />
@@ -133,20 +163,29 @@ function ImagePreviewModal({ imageUrl, onClose }) {
   );
 }
 
-function ResultsTable({ results, queryPreview, onSelectResult }) {
+function ResultsTable({
+  results,
+  queryPreview,
+  liveQueryPreview,
+  onSelectResult,
+}) {
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("all");
   const [sortDirection, setSortDirection] = useState("desc");
   const [page, setPage] = useState(1);
   const [previewImage, setPreviewImage] = useState("");
+  const facePreviewSource = queryPreview || liveQueryPreview;
 
   const visibleResults = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase();
     return [...results]
       .filter((item) => {
-        const haystack = `${item.face_id} ${item.label} ${item.timestamp} ${item.image_path || ""} ${item.face_image || ""}`.toLowerCase();
-        const passesQuery = !normalizedQuery || haystack.includes(normalizedQuery);
-        const passesFilter = filter === "all" || resultSimilarity(item) >= Number(filter);
+        const haystack =
+          `${item.face_id} ${item.label} ${item.timestamp} ${item.image_path || ""} ${item.face_image || ""}`.toLowerCase();
+        const passesQuery =
+          !normalizedQuery || haystack.includes(normalizedQuery);
+        const passesFilter =
+          filter === "all" || resultSimilarity(item) >= Number(filter);
         return passesQuery && passesFilter;
       })
       .sort((a, b) => {
@@ -157,10 +196,17 @@ function ResultsTable({ results, queryPreview, onSelectResult }) {
 
   const totalPages = Math.max(1, Math.ceil(visibleResults.length / PAGE_SIZE));
   const safePage = Math.min(page, totalPages);
-  const paginated = visibleResults.slice((safePage - 1) * PAGE_SIZE, safePage * PAGE_SIZE);
+  const paginated = visibleResults.slice(
+    (safePage - 1) * PAGE_SIZE,
+    safePage * PAGE_SIZE,
+  );
 
   return (
-    <motion.article className="panel results-panel" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+    <motion.article
+      className="panel results-panel"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+    >
       <div className="panel__header results-panel__header">
         <div>
           <span>Investigation</span>
@@ -192,7 +238,14 @@ function ResultsTable({ results, queryPreview, onSelectResult }) {
             <option value="0.75">75% and up</option>
             <option value="0.5">50% and up</option>
           </select>
-          <button type="button" onClick={() => setSortDirection((current) => (current === "desc" ? "asc" : "desc"))}>
+          <button
+            type="button"
+            onClick={() =>
+              setSortDirection((current) =>
+                current === "desc" ? "asc" : "desc",
+              )
+            }
+          >
             <SlidersHorizontal size={16} aria-hidden="true" />
             Sort {sortDirection === "desc" ? "High" : "Low"}
           </button>
@@ -225,9 +278,19 @@ function ResultsTable({ results, queryPreview, onSelectResult }) {
                   return (
                     <tr key={rowKey}>
                       <td>
-                        {queryPreview ? (
-                          <button className="image-button" type="button" onClick={() => setPreviewImage(queryPreview)} aria-label="Preview query face">
-                            <img className="query-thumb" src={queryPreview} alt="Uploaded query face" loading="lazy" />
+                        {facePreviewSource ? (
+                          <button
+                            className="image-button"
+                            type="button"
+                            onClick={() => setPreviewImage(facePreviewSource)}
+                            aria-label="Preview query face"
+                          >
+                            <img
+                              className="query-thumb"
+                              src={facePreviewSource}
+                              alt="Uploaded query face"
+                              loading="lazy"
+                            />
                           </button>
                         ) : (
                           <PlaceholderAvatar label="Q" />
@@ -251,10 +314,19 @@ function ResultsTable({ results, queryPreview, onSelectResult }) {
                         </div>
                       </td>
                       <td>
-                        <StatusBadge status={confidence >= 75 ? "COMPLETED" : "QUEUED"} label={confidence >= 75 ? "Match" : "Review"} />
+                        <StatusBadge
+                          status={confidence >= 75 ? "COMPLETED" : "QUEUED"}
+                          label={confidence >= 75 ? "Match" : "Review"}
+                        />
                       </td>
                       <td>
-                        <button className="table-action" type="button" onClick={() => onSelectResult({ ...item, imageSources: sources })}>
+                        <button
+                          className="table-action"
+                          type="button"
+                          onClick={() =>
+                            onSelectResult({ ...item, imageSources: sources })
+                          }
+                        >
                           <Eye size={16} aria-hidden="true" />
                           View Details
                         </button>
@@ -271,10 +343,20 @@ function ResultsTable({ results, queryPreview, onSelectResult }) {
               Page {safePage} of {totalPages}
             </span>
             <div>
-              <button type="button" disabled={safePage === 1} onClick={() => setPage((current) => Math.max(1, current - 1))}>
+              <button
+                type="button"
+                disabled={safePage === 1}
+                onClick={() => setPage((current) => Math.max(1, current - 1))}
+              >
                 <ChevronLeft size={16} aria-hidden="true" />
               </button>
-              <button type="button" disabled={safePage === totalPages} onClick={() => setPage((current) => Math.min(totalPages, current + 1))}>
+              <button
+                type="button"
+                disabled={safePage === totalPages}
+                onClick={() =>
+                  setPage((current) => Math.min(totalPages, current + 1))
+                }
+              >
                 <ChevronRight size={16} aria-hidden="true" />
               </button>
             </div>
@@ -282,7 +364,10 @@ function ResultsTable({ results, queryPreview, onSelectResult }) {
         </>
       )}
 
-      <ImagePreviewModal imageUrl={previewImage} onClose={() => setPreviewImage("")} />
+      <ImagePreviewModal
+        imageUrl={previewImage}
+        onClose={() => setPreviewImage("")}
+      />
     </motion.article>
   );
 }
