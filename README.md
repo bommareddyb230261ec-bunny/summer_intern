@@ -2,7 +2,35 @@
 
 An end-to-end AI-powered surveillance system that identifies a person from one or more surveillance videos using a single query face image.
 
-This project combines computer vision, deep learning, vector similarity search, and full-stack web development into a practical application for automated person search in large video collections.
+This project solves the common real-world problem of finding a person across large volumes of video footage quickly and accurately. It combines computer vision, deep learning, vector similarity search, and full-stack engineering to deliver both offline video face search and live camera face search using the same ArcFace + FAISS pipeline.
+
+The latest enhancements include live webcam face search with query-to-live matching, a unified investigation results workflow, direct live match integration into the results table, and interactive query/live comparison previews for faster analyst review.
+
+---
+
+# Project Highlights
+
+- Supports both offline video-based face search and live webcam face search with one shared AI pipeline
+- Uses ArcFace for robust face embedding and FAISS for fast similarity retrieval
+- Integrates live camera matches directly into the dashboard investigation results
+- Provides real-time similarity scoring, timestamps, and match preview cards
+- Includes secure Google OAuth login and JWT-based session protection
+- Uses SQLAlchemy async data access with SQLite job state and PostgreSQL-compatible auth storage
+- Displays rich match metadata and image previews in a dark-themed React interface
+- Supports multiple surveillance video uploads and scalable frame extraction
+- Uses FastAPI backend with modular AI pipeline orchestration
+- Includes interactive query/live comparison and click-to-zoom previews
+- Presents a professional end-to-end solution for surveillance, forensics, and security review
+
+---
+
+## Technology Stack
+
+- Backend: FastAPI, SQLAlchemy async, authlib, python-jose, pydantic-settings, python-dotenv
+- Database: SQLite for job state, PostgreSQL-compatible auth store via asyncpg
+- Frontend: React 18, Vite, react-router-dom, axios, framer-motion, lucide-react
+- AI / CV: InsightFace ArcFace, FAISS, OpenCV, Ultralytics YOLO, ONNX Runtime, PyTorch, Pillow
+- Data science / utilities: numpy, scikit-learn, matplotlib, seaborn, tqdm
 
 ---
 
@@ -42,13 +70,16 @@ The project is built around the following objectives:
 
 - Google OAuth login with JWT authentication
 - Upload a query face image
+- Live webcam face search with query-to-live matching
+- Direct live match integration into the investigation results table
+- Click-to-zoom query/live comparison preview
 - Upload multiple surveillance videos
 - Automatic frame extraction
 - Person detection using YOLO
 - Face detection and cropping
 - ArcFace embedding generation
 - FAISS-based similarity search
-- Interactive React dashboard
+- Interactive React dashboard with dark-themed match review
 - FastAPI backend with REST APIs
 - Processing status tracking
 - Match visualization with timestamps
@@ -59,6 +90,8 @@ The project is built around the following objectives:
 # Complete System Workflow
 
 The complete workflow of the system is designed to move from user interaction to intelligent matching in a clear and structured way.
+
+## Video Processing Workflow
 
 1. Login
 
@@ -86,7 +119,33 @@ The complete workflow of the system is designed to move from user interaction to
 
 7. Dashboard
 
-   The dashboard displays the results in a user-friendly interface so that the operator can inspect the matches quickly and understand the output.
+   The dashboard displays results in a user-friendly interface so the operator can inspect the matches quickly and understand the output.
+
+## Live Camera Workflow
+
+1. Upload Query Image
+
+   The user uploads a query face image for live matching.
+
+2. Start Live Camera
+
+   The dashboard activates webcam monitoring and begins streaming frames to the AI pipeline.
+
+3. Real-Time Matching
+
+   Each live frame is compared against the query embedding using the same ArcFace + FAISS-based matching engine.
+
+4. Live Alerts and Scoring
+
+   The system reports similarity scores, timestamps, and live alerts for strong matches.
+
+5. Investigation Integration
+
+   Successful live matches are added to the investigation results table for review alongside offline video matches.
+
+6. Review
+
+   The user inspects live and offline matches in the same dashboard interface with preview and comparison support.
 
 ---
 
@@ -167,7 +226,7 @@ The AI pipeline is the core of the system. Each stage is designed to transform r
   <img src="images/overall1.png" alt="Overall System Architecture" width="100%">
 </p>
 
-The overall architecture is organized around a user-facing web application and a backend processing engine. The frontend allows users to log in, upload images and videos, and review results. The backend manages authentication, file storage, job execution, and API communication. The AI component processes the uploaded media, generates embeddings, performs similarity matching, and returns structured results that are displayed in the dashboard.
+The overall architecture is organized around a user-facing web application and a backend processing engine. The frontend allows users to log in, upload images and videos, launch live camera monitoring, and review results. The backend manages authentication, file storage, job execution, and API communication. The AI component processes both uploaded video frames and live camera frames, generates embeddings, performs similarity matching, and returns structured results that are displayed in the dashboard.
 
 ## AI Processing Pipeline
 
@@ -175,7 +234,17 @@ The overall architecture is organized around a user-facing web application and a
   <img src="images/ml1.png" alt="AI Processing Pipeline" width="100%">
 </p>
 
-The pipeline begins with video input, then moves through frame extraction, person detection, face detection, face alignment, embedding generation, and similarity matching. The output is a set of candidate matches that are ranked and presented to the user with associated timestamps and previews. This flow reflects the end-to-end design of the application, from raw media input to actionable results.
+The pipeline begins with video input or live camera input, then moves through frame extraction, person detection, face detection, face alignment, embedding generation, and similarity matching. The output is a set of candidate matches that are ranked and presented to the user with associated timestamps and previews. This flow reflects the end-to-end design of the application, from raw media input to actionable results.
+
+---
+
+# Challenges Solved
+
+- Processing large surveillance videos efficiently while maintaining match quality
+- Accurate face matching under pose, lighting, and occlusion variations
+- Fast similarity search using FAISS for real-time and offline retrieval
+- Secure authentication with Google OAuth and JWT sessions
+- Integrating AI models, live camera streaming, and a web dashboard into a single application
 
 ---
 
