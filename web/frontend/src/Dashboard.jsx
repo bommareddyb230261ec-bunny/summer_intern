@@ -9,6 +9,7 @@ import ResultsTable from "./components/ResultsTable";
 import Sidebar from "./components/Sidebar";
 import SummaryCards from "./components/SummaryCards";
 import UploadPanel from "./components/UploadPanel";
+import LiveCameraPanel from "./components/LiveCameraPanel";
 import "./Dashboard.css";
 
 const STATUS_LABELS = {
@@ -36,6 +37,21 @@ function Dashboard() {
   const [queryPreview, setQueryPreview] = useState("");
   const pollRef = useRef(null);
   const completionTimerRef = useRef(null);
+  const livePollRef = useRef(null);
+
+  const [liveQueryFile, setLiveQueryFile] = useState(null);
+  const [liveQueryPreview, setLiveQueryPreview] = useState("");
+  const [liveQueryUploaded, setLiveQueryUploaded] = useState(false);
+  const [liveCameraRunning, setLiveCameraRunning] = useState(false);
+  const [liveFrame, setLiveFrame] = useState(null);
+  const [liveStatus, setLiveStatus] = useState("idle");
+  const [livePersonStatus, setLivePersonStatus] = useState("idle");
+  const [liveFaceStatus, setLiveFaceStatus] = useState("idle");
+  const [liveMatchStatus, setLiveMatchStatus] = useState("waiting");
+  const [liveSimilarity, setLiveSimilarity] = useState(0.0);
+  const [liveTimestamp, setLiveTimestamp] = useState("");
+  const [liveHistory, setLiveHistory] = useState([]);
+  const [liveError, setLiveError] = useState("");
 
   const canStart = jobId && stage === "VIDEOS_UPLOADED";
 
@@ -43,12 +59,31 @@ function Dashboard() {
     return message || STATUS_LABELS[status] || "Preparing...";
   }, [message, status]);
 
-  const matchesCount = results.length;
+  const liveResults = useMemo(
+    () =>
+      liveHistory.map((item, index) => ({
+        face_id: item.label || `Live-${index + 1}`,
+        label: item.label || "Live match",
+        similarity: Number(item.similarity || 0),
+        timestamp: item.timestamp || "",
+        matched_face_image: item.face_data,
+        frame_name: item.timestamp || `Live-${index + 1}`,
+        bounding_box: item.bbox || item.bounding_box || null,
+        source: "live",
+      })),
+    [liveHistory],
+  );
+
+  const mergedResults = useMemo(
+    () => [...liveResults, ...results],
+    [liveResults, results],
+  );
+  const matchesCount = mergedResults.length;
   const peopleCount = useMemo(
     () =>
-      new Set(results.map((item) => item.label).filter(Boolean)).size ||
-      results.length,
-    [results],
+      new Set(mergedResults.map((item) => item.label).filter(Boolean)).size ||
+      mergedResults.length,
+    [mergedResults],
   );
 
   useEffect(() => {
@@ -63,6 +98,9 @@ function Dashboard() {
     return () => {
       if (pollRef.current) {
         clearInterval(pollRef.current);
+      }
+      if (livePollRef.current) {
+        clearInterval(livePollRef.current);
       }
       if (completionTimerRef.current) {
         clearTimeout(completionTimerRef.current);
@@ -81,6 +119,17 @@ function Dashboard() {
     return () => URL.revokeObjectURL(previewUrl);
   }, [queryFile]);
 
+  useEffect(() => {
+    if (!liveQueryFile) {
+      setLiveQueryPreview("");
+      return undefined;
+    }
+
+    const previewUrl = URL.createObjectURL(liveQueryFile);
+    setLiveQueryPreview(previewUrl);
+    return () => URL.revokeObjectURL(previewUrl);
+  }, [liveQueryFile]);
+
   const handleLogout = async () => {
     setLoading(true);
     try {
@@ -97,6 +146,10 @@ function Dashboard() {
 
   const handleVideosChange = (event) => {
     setVideoFiles(Array.from(event.target.files ?? []));
+  };
+
+  const handleLiveQueryChange = (event) => {
+    setLiveQueryFile(event.target.files?.[0] ?? null);
   };
 
   const uploadQuery = async () => {
@@ -193,6 +246,90 @@ function Dashboard() {
     }
   };
 
+  const uploadLiveQuery = async () => {
+    if (!liveQueryFile) {
+      setLiveError("Please select a query face file.");
+      return;
+    }
+
+    setLiveError("");
+    setLoading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", liveQueryFile);
+      await api.post("/live/query", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      setLiveQueryUploaded(true);
+      setLiveStatus("query_uploaded");
+    } catch (err) {
+      setLiveError("Failed to upload live query face. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const startLiveCamera = async () => {
+    if (!liveQueryUploaded) {
+      setLiveError("Upload the live query face before starting the camera.");
+      return;
+    }
+    setLiveError("");
+    setLoading(true);
+
+    try {
+      await api.post("/live/start");
+      setLiveCameraRunning(true);
+      setLiveStatus("running");
+      if (livePollRef.current) {
+        clearInterval(livePollRef.current);
+      }
+      await fetchLiveStatus();
+      livePollRef.current = setInterval(fetchLiveStatus, 1500);
+    } catch (err) {
+      setLiveError("Failed to start live camera.");
+      setLiveCameraRunning(false);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const stopLiveCamera = async () => {
+    setLoading(true);
+
+    try {
+      await api.post("/live/stop");
+      setLiveCameraRunning(false);
+      setLiveStatus("stopped");
+      if (livePollRef.current) {
+        clearInterval(livePollRef.current);
+      }
+    } catch (err) {
+      setLiveError("Failed to stop live camera.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const fetchLiveStatus = async () => {
+    try {
+      const response = await api.get("/live/status");
+      setLiveStatus(response.data.camera_status || "idle");
+      setLivePersonStatus(response.data.person_status || "idle");
+      setLiveFaceStatus(response.data.face_status || "idle");
+      setLiveMatchStatus(response.data.match_status || "waiting");
+      setLiveSimilarity(response.data.similarity || 0.0);
+      setLiveTimestamp(response.data.timestamp || "");
+      setLiveHistory(response.data.history || []);
+
+      const frameResponse = await api.get("/live/frame");
+      setLiveFrame(frameResponse.data.frame_data || null);
+    } catch (err) {
+      setLiveError("Unable to fetch live camera status.");
+    }
+  };
+
   const fetchStatus = async (targetJobId = jobId) => {
     if (!targetJobId) return;
 
@@ -283,19 +420,31 @@ function Dashboard() {
               onStartProcessing={startProcessing}
             />
 
-            <PipelineProgress
-              status={status}
-              stage={stage}
-              message={progressLabel}
-              progress={progress}
-              videoCount={videoFiles.length}
-              peopleCount={peopleCount}
+            <LiveCameraPanel
+              liveQueryFile={liveQueryFile}
+              liveQueryPreview={liveQueryPreview}
+              liveQueryUploaded={liveQueryUploaded}
+              liveCameraRunning={liveCameraRunning}
+              liveLoading={loading}
+              liveError={liveError}
+              liveFrame={liveFrame}
+              liveStatus={liveStatus}
+              livePersonStatus={livePersonStatus}
+              liveFaceStatus={liveFaceStatus}
+              liveMatchStatus={liveMatchStatus}
+              liveSimilarity={liveSimilarity}
+              liveTimestamp={liveTimestamp}
+              onLiveQueryChange={handleLiveQueryChange}
+              onUploadLiveQuery={uploadLiveQuery}
+              onStartLiveCamera={startLiveCamera}
+              onStopLiveCamera={stopLiveCamera}
             />
           </section>
 
           <ResultsTable
-            results={results}
+            results={mergedResults}
             queryPreview={queryPreview}
+            liveQueryPreview={liveQueryPreview}
             onSelectResult={setSelectedResult}
           />
         </div>
@@ -304,6 +453,7 @@ function Dashboard() {
       <ResultDrawer
         result={selectedResult}
         queryPreview={queryPreview}
+        liveQueryPreview={liveQueryPreview}
         onClose={() => setSelectedResult(null)}
       />
       <LoadingOverlay
