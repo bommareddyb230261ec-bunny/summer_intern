@@ -298,6 +298,35 @@ Generated result images and previews are displayed for visual verification.
 
 The system can also present example cases where a candidate match is rejected or flagged as uncertain.
 
+### Live Video Surveillance System
+
+<p align="center">
+  <img src="images/live_video_dashboard.jpeg" alt="Live Camera Dashboard" width="90%">
+</p>
+
+**Live Camera Feed with Real-Time Matching** — The live video surveillance system captures live camera frames and processes them in real-time. The interface displays:
+
+- **Live Camera Preview**: Shows the current camera frame with detected person and face regions
+- **Real-Time Processing Status**: Indicates face detection, person detection, and matching state
+- **Similarity Score**: Displays the confidence level of matches found in the live stream
+- **Timestamp**: Records when each frame was captured for forensic traceability
+- **Investigation Results Table**: Live matches are seamlessly integrated into the same results table used for offline video searches, allowing investigators to review both video and live matches in a unified interface
+
+### Live Match Comparison Detail
+
+<p align="center">
+  <img src="images/live_query_face_searching.jpeg" alt="Live Match Detail Drawer" width="90%">
+</p>
+
+**Detailed Match Analysis** — When a live match is selected, a detail drawer displays:
+
+- **Matched Face**: The face detected in the live camera stream (left)
+- **Query Face**: The reference face image uploaded for searching (right)
+- **Similarity Score**: A visual similarity percentage (e.g., 70%) with a color-coded confidence bar
+- **Video Source**: Identifies the match source (e.g., "Live match" for real-time matches)
+
+This side-by-side comparison allows investigators to quickly verify match quality and make informed decisions during active surveillance or forensic review.
+
 ---
 
 # Technology Stack
